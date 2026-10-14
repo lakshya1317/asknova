@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ask nova</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+
+                <div>
+                    <h2>Ask nova AI</h2>
+                    <span>AI Student Support</span>
+                </div>
+            </div>
+
+
+            <button class="new-chat" id="newChatBtn">
+                + New Chat
+            </button>
+ <div class="history">
+
+    <p class="history-title">RECENT CHATS</p>
+
+    <div id="chatHistory">
+
+        <!-- Chat history will appear here -->
+
+    </div>
+
+</div>
+
+            <nav class="menu">
+
+                <button class="menu-item active">
+                    💬 <span>Chat</span>
+                </button>
+
+                <button class="menu-item">
+                    ❓ <span>FAQs</span>
+                </button>
+
+                <button class="menu-item">
+                    🎓 <span>Academics</span>
+                </button>
+
+                <button class="menu-item">
+                    🏠 <span>Hostel</span>
+                </button>
+
+                <button class="menu-item">
+                    📞 <span>Contact</span>
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+                <button id="themeBtn" class="theme-btn">
+    🌙 Dark Mode
+</button>
+
+                <button id="clearChatBtn" class="clear-btn">
+                    🗑️ Clear Chat
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CHAT -->
+        <main class="main">
+
+            <!-- HEADER -->
+            <header class="chat-header">
+
+                <div>
+
+                    <h1>Ask nova AI</h1>
+
+                    <p>
+                        University Student Support Assistant
+                    </p>
+
+                </div>
+
+                <div class="online">
+                    <span></span>
+                    Online
+                </div>
+
+            </header>
+
+
+            <!-- CHAT AREA -->
+            <section class="chat-box" id="chatBox">
+
+                <!-- BOT WELCOME -->
+                <div class="message bot-message">
+
+                    <div class="avatar">
+                        🤖
+                    </div>
+
+                    <div class="message-content">
+
+                        <strong>Ask nova AI</strong>
+
+                        <p>
+                            👋 Hello! I'm Ask nova AI.
+                            I'm here to help you with university-related questions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUGGESTIONS -->
+
+                <div class="suggestions">
+
+                    <p>Try asking me:</p>
+
+                    <div class="suggestion-buttons">
+
+                        <button onclick="askQuestion('What is the exam schedule?')">
+                            📅 Exam Schedule
+                        </button>
+
+                        <button onclick="askQuestion('Tell me about hostel facilities')">
+                            🏠 Hostel Information
+                        </button>
+
+                        <button onclick="askQuestion('How can I check my fees?')">
+                            💰 Fee Information
+                        </button>
+
+                        <button onclick="askQuestion('Tell me about attendance rules')">
+                            📚 Attendance Rules
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INPUT -->
+            <div class="input-area">
+
+                <input
+                    type="text"
+                    id="userInput"
+                    placeholder="Ask anything about your university..."
+                    autocomplete="off"
+                >
+
+                <button id="sendBtn">
+                    Send ➤
+                </button>
+
+            </div>
+
+            <p class="disclaimer">
+                Asknova AI can make mistakes. Please verify important university information.
+            </p>
+
+        </main>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
