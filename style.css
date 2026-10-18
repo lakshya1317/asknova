@@ -635,3 +635,101 @@ body.dark-mode .suggestion-buttons button {
         opacity: 1;
     }
 }
+
+/* AskNova AI - Clickable Links */
+.message-content a {
+    color: #2563eb;
+    text-decoration: underline;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    transition: color 0.2s ease;
+}
+
+.message-content a:hover {
+    color: #1d4ed8;
+}
+
+.dark-mode .message-content a {
+    color: #60a5fa;
+}
+
+.dark-mode .message-content a:hover {
+    color: #93c5fd;
+}
+
+/* AskNova AI - Better Chat Formatting */
+.message-content p {
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.message-content a {
+    overflow-wrap: anywhere;
+}
+
+.message-content small {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.copy-btn {
+    margin-top: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.copy-btn:hover {
+    opacity: 0.8;
+}
+
+
+/* AskNova AI - Formatted Answers */
+
+.bot-answer {
+    margin-top: 10px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.bot-answer p {
+    margin: 6px 0 10px;
+    white-space: pre-wrap;
+}
+
+.bot-answer h3,
+.bot-answer h4,
+.bot-answer h5 {
+    margin: 12px 0 6px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.bot-answer .bot-bullet {
+    margin: 5px 0;
+    padding-left: 6px;
+    line-height: 1.6;
+}
+
+.bot-answer a {
+    color: #2563eb;
+    text-decoration: underline;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.bot-answer a:hover {
+    color: #1d4ed8;
+}
+
+.dark-mode .bot-answer a {
+    color: #60a5fa;
+}
+
+.dark-mode .bot-answer a:hover {
+    color: #93c5fd;
+}

@@ -1,16 +1,18 @@
+
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 const clearChatBtn = document.getElementById("clearChatBtn");
 const newChatBtn = document.getElementById("newChatBtn");
-
 const chatHistory = document.getElementById("chatHistory");
+const themeBtn = document.getElementById("themeBtn");
 
 let conversations = [];
 
+// CHAT HISTORY
 function addToHistory(message) {
-
+    conversations = conversations.filter(item => item !== message);
     conversations.unshift(message);
 
     if (conversations.length > 5) {
@@ -21,29 +23,27 @@ function addToHistory(message) {
 }
 
 function renderHistory() {
-
     chatHistory.innerHTML = "";
 
-    conversations.forEach(function(chat) {
-
+    conversations.forEach(function (chat) {
         const item = document.createElement("div");
-
         item.className = "history-item";
+        item.textContent = "💬 " + chat;
 
-        item.innerHTML = `💬 ${chat}`;
+        item.addEventListener("click", function () {
+            userInput.value = chat;
+            userInput.focus();
+        });
 
         chatHistory.appendChild(item);
-
     });
 }
 
 // SEND MESSAGE
-
 async function sendMessage() {
-
     const message = userInput.value.trim();
 
-    if (message === "") {
+    if (!message || sendBtn.disabled) {
         return;
     }
 
@@ -51,123 +51,226 @@ async function sendMessage() {
     addToHistory(message);
     userInput.value = "";
 
- showTyping();
+    showTyping();
+    sendBtn.disabled = true;
 
-try {
-    const response = await fetch("http://localhost:5000/api/chat", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            message: message
-        })
-    });
+    try {
+        const response = await fetch("http://localhost:5000/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    removeTyping();
-    addBotMessage(data.reply);
+        removeTyping();
 
-} catch (error) {
-    removeTyping();
-    addBotMessage("Sorry, I could not connect to the server. ❌");
+        if (!response.ok) {
+            addBotMessage(data.reply || "Sorry, something went wrong.");
+        } else {
+            addBotMessage(data.reply || "I couldn't generate a response.");
+        }
+    } catch (error) {
+        removeTyping();
+        addBotMessage(
+            "Sorry, I could not connect to the server. Please ensure the AskNova backend and Ollama are running. ❌"
+        );
+        console.error("Chat error:", error);
+    } finally {
+        sendBtn.disabled = false;
+        userInput.focus();
+    }
 }
 
-}
-
-
-// USER MESSAGE
-
+// SAFELY DISPLAY USER MESSAGE
 function addUserMessage(message) {
-
     const messageDiv = document.createElement("div");
-
     messageDiv.className = "message user-message";
 
-    messageDiv.innerHTML = `
-        <div class="message-content">
+    const content = document.createElement("div");
+    content.className = "message-content";
 
-            <strong>You</strong>
+    const title = document.createElement("strong");
+    title.textContent = "You";
 
-            <p>${message}</p>
-            <small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</small>
+    const paragraph = document.createElement("p");
+    paragraph.textContent = message;
 
-        </div>
-    `;
+    const time = document.createElement("small");
+    time.textContent = getCurrentTime();
 
+    content.append(title, paragraph, time);
+    messageDiv.appendChild(content);
     chatBox.appendChild(messageDiv);
 
     scrollToBottom();
 }
 
-
-// BOT MESSAGE
+// BOT MESSAGE WITH CLICKABLE LINKS
 
 function addBotMessage(message) {
-
     const messageDiv = document.createElement("div");
-
     messageDiv.className = "message bot-message";
 
-    messageDiv.innerHTML = `
-        <div class="avatar">
-            🤖
-        </div>
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "🤖";
 
-        <div class="message-content">
+    const content = document.createElement("div");
+    content.className = "message-content";
 
-            <strong>Ask nova AI</strong>
+    const title = document.createElement("strong");
+    title.textContent = "AskNova AI";
 
-           <p>${message}</p>
-           <small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</small>
-<button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+    const answer = document.createElement("div");
+    answer.className = "bot-answer";
 
-        </div>
-    `;
+    // Safely format text, headings, bullets, and links
+    const lines = String(message).split("\n");
 
+    lines.forEach(function (line) {
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+            answer.appendChild(document.createElement("br"));
+            return;
+        }
+
+        // Headings: # Heading, ## Heading, ### Heading
+        const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/);
+
+        if (headingMatch) {
+            const heading = document.createElement(
+                "h" + (headingMatch[1].length + 2)
+            );
+            addTextWithLinks(heading, headingMatch[2]);
+            answer.appendChild(heading);
+            return;
+        }
+
+        // Bullet points: - item, * item, or • item
+        if (/^[-*•]\s+/.test(trimmed)) {
+            const bullet = document.createElement("div");
+            bullet.className = "bot-bullet";
+            bullet.textContent = "• ";
+
+            const bulletText = document.createElement("span");
+            addTextWithLinks(bulletText, trimmed.replace(/^[-*•]\s+/, ""));
+
+            bullet.appendChild(bulletText);
+            answer.appendChild(bullet);
+            return;
+        }
+
+        // Numbered lists: 1. item, 2. item, etc.
+        const numberMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+
+        if (numberMatch) {
+            const item = document.createElement("div");
+            item.className = "bot-bullet";
+
+            const number = document.createElement("strong");
+            number.textContent = numberMatch[1] + ". ";
+
+            const text = document.createElement("span");
+            addTextWithLinks(text, numberMatch[2]);
+
+            item.append(number, text);
+            answer.appendChild(item);
+            return;
+        }
+
+        const paragraph = document.createElement("p");
+        addTextWithLinks(paragraph, trimmed);
+        answer.appendChild(paragraph);
+    });
+
+    const time = document.createElement("small");
+    time.textContent = getCurrentTime();
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn";
+    copyBtn.textContent = "📋 Copy";
+
+    copyBtn.addEventListener("click", function () {
+        copyAnswer(copyBtn);
+    });
+
+    content.append(title, answer, time, copyBtn);
+    messageDiv.append(avatar, content);
     chatBox.appendChild(messageDiv);
 
     scrollToBottom();
 }
 
+// Safely display clickable HTTP/HTTPS links
+function addTextWithLinks(container, text) {
+    const parts = String(text).split(/(https?:\/\/[^\s<]+)/gi);
+
+    parts.forEach(function (part) {
+        if (/^https?:\/\//i.test(part)) {
+            const match = part.match(/^(.*?)([.,!?;:]*)$/);
+            const urlText = match[1];
+            const punctuation = match[2];
+
+            const link = document.createElement("a");
+            link.href = urlText;
+            link.textContent = urlText;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+
+            container.appendChild(link);
+
+            if (punctuation) {
+                container.appendChild(document.createTextNode(punctuation));
+            }
+        } else {
+            container.appendChild(document.createTextNode(part));
+        }
+    });
+}
+
+
+// CURRENT TIME
+function getCurrentTime() {
+    return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
 
 // TYPING ANIMATION
-
 function showTyping() {
+    removeTyping();
 
     const typing = document.createElement("div");
-
     typing.id = "typing";
-
     typing.className = "message bot-message";
 
-    typing.innerHTML = `
-        <div class="avatar">
-            🤖
-        </div>
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "🤖";
 
-        <div class="message-content">
+    const content = document.createElement("div");
+    content.className = "message-content";
 
-            <strong>Ask nova AI</strong>
+    const title = document.createElement("strong");
+    title.textContent = "AskNova AI";
 
-            <p class="typing-dots">
-    <span>.</span>
-    <span>.</span>
-    <span>.</span>
-</p>
+    const dots = document.createElement("p");
+    dots.className = "typing-dots";
+    dots.textContent = "...";
 
-        </div>
-    `;
-
+    content.append(title, dots);
+    typing.append(avatar, content);
     chatBox.appendChild(typing);
 
     scrollToBottom();
 }
 
-
 function removeTyping() {
-
     const typing = document.getElementById("typing");
 
     if (typing) {
@@ -175,172 +278,111 @@ function removeTyping() {
     }
 }
 
-
-// TEMPORARY BOT LOGIC
-
-function getBotResponse(message) {
-
-    const text = message.toLowerCase();
-
-
-    if (text.includes("hello") || text.includes("hi")) {
-
-        return "Hello! 👋 How can I help you with your university-related questions?";
-
-    }
-
-
-    if (text.includes("exam")) {
-
-        return "I can help you with exam-related information such as schedules, syllabus and examination guidelines. 📅";
-
-    }
-
-
-    if (text.includes("hostel")) {
-
-        return "I can provide information about hostel facilities, rules, mess and other hostel-related services. 🏠";
-
-    }
-
-
-    if (text.includes("fee")) {
-
-        return "I can help you understand tuition fees, hostel fees and other university-related fee information. 💰";
-
-    }
-
-
-    if (text.includes("attendance")) {
-
-        return "I can provide information about attendance requirements and attendance-related university rules. 📚";
-
-    }
-
-
-    return "That's a good question! 🤖 Once my AI model is connected, I'll be able to provide a detailed answer based on university information.";
-}
-
-
 // SUGGESTION QUESTIONS
-
 function askQuestion(question) {
-
     userInput.value = question;
-
     sendMessage();
 }
 
-
 // CLEAR CHAT
+function clearChat() {
+    chatBox.innerHTML = "";
+    conversations = [];
+    renderHistory();
 
-clearChatBtn.addEventListener("click", function() {
-
-    chatBox.innerHTML = `
-        <div class="message bot-message">
-
-            <div class="avatar">
-                🤖
-            </div>
-
-            <div class="message-content">
-
-                <strong>UniAssist AI</strong>
-
-                <p>
-                    👋 Hello! I'm UniAssist AI.
-                    How can I help you today?
-                </p>
-
-            </div>
-
-        </div>
-    `;
-
-});
-
+    addWelcomeMessage();
+    userInput.value = "";
+    userInput.focus();
+}
 
 // NEW CHAT
-newChatBtn.addEventListener("click", function() {
-
-    chatBox.innerHTML = `
-        <div class="message bot-message">
-
-            <div class="avatar">
-                🤖
-            </div>
-
-            <div class="message-content">
-
-                <strong>AskNova AI</strong>
-
-                <p>
-                    👋 Hello! I'm AskNova AI.
-                    How can I help you today?
-                </p>
-
-            </div>
-
-        </div>
-    `;
+function newChat() {
+    chatBox.innerHTML = "";
+    addWelcomeMessage();
 
     userInput.value = "";
-
     userInput.focus();
+}
 
-});
+// WELCOME MESSAGE
+function addWelcomeMessage() {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message bot-message";
 
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "🤖";
 
-// SEND BUTTON
+    const content = document.createElement("div");
+    content.className = "message-content";
 
-sendBtn.addEventListener("click", sendMessage);
+    const title = document.createElement("strong");
+    title.textContent = "AskNova AI";
 
+    const paragraph = document.createElement("p");
+    paragraph.textContent =
+        "👋 Hello! I'm AskNova AI. How can I help you today?";
+
+    content.append(title, paragraph);
+    messageDiv.append(avatar, content);
+    chatBox.appendChild(messageDiv);
+}
+
+// BUTTON EVENTS
+if (clearChatBtn) {
+    clearChatBtn.addEventListener("click", clearChat);
+}
+
+if (newChatBtn) {
+    newChatBtn.addEventListener("click", newChat);
+}
+
+if (sendBtn) {
+    sendBtn.addEventListener("click", sendMessage);
+}
 
 // ENTER KEY
-
-userInput.addEventListener("keydown", function(event) {
-
-    if (event.key === "Enter") {
-
-        sendMessage();
-
-    }
-
-});
-
+if (userInput) {
+    userInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+}
 
 // AUTO SCROLL
-
 function scrollToBottom() {
-
     chatBox.scrollTop = chatBox.scrollHeight;
-
 }
-const themeBtn = document.getElementById("themeBtn");
 
-themeBtn.addEventListener("click", function () {
+// DARK MODE
+if (themeBtn) {
+    themeBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
 
-    document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+            themeBtn.textContent = "☀️ Light Mode";
+        } else {
+            themeBtn.textContent = "🌙 Dark Mode";
+        }
+    });
+}
 
-    if (document.body.classList.contains("dark-mode")) {
+// COPY BOT ANSWER
+async function copyAnswer(button) {
+    const paragraph = button.parentElement.querySelector("p");
+    const answer = paragraph ? paragraph.innerText : "";
 
-        themeBtn.innerHTML = "☀️ Light Mode";
+    try {
+        await navigator.clipboard.writeText(answer);
+        button.textContent = "✅ Copied!";
 
-    } else {
-
-        themeBtn.innerHTML = "🌙 Dark Mode";
-
+        setTimeout(function () {
+            button.textContent = "📋 Copy";
+        }, 1500);
+    } catch (error) {
+        console.error("Copy failed:", error);
+        button.textContent = "Copy failed";
     }
-
-});
-function copyAnswer(button) {
-    const answer = button.previousElementSibling.innerText;
-
-    navigator.clipboard.writeText(answer);
-
-    button.innerHTML = "✅ Copied!";
-
-    setTimeout(function () {
-        button.innerHTML = "📋 Copy";
-    }, 1500);
 }

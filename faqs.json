@@ -1,0 +1,82 @@
+
+[
+  {
+    "category": "general",
+    "question": "What is AskNova AI?",
+    "answer": "AskNova AI is a university student support chatbot designed to help students find information about academics, examinations, hostel services, fees, attendance, and other college-related topics."
+  },
+  {
+    "category": "general",
+    "question": "How can I get verified information about ABES Engineering College?",
+    "answer": "For accurate and up-to-date information about ABES Engineering College, check the official college website or contact the relevant college department."
+  },
+  {
+    "category": "academics",
+    "question": "Where can I check my exam schedule?",
+    "answer": "Please check the latest official examination notices or contact your college department for your exam schedule."
+  },
+  {
+    "category": "hostel",
+    "question": "Where can I find hostel rules and information?",
+    "answer": "For current hostel rules, facilities, and timings, consult the official hostel notices or contact the hostel administration."
+  },
+  {
+    "category": "fees",
+    "question": "Where can I check college fee details?",
+    "answer": "For accurate fee amounts and payment deadlines, refer to the latest official fee notice or contact the college accounts department."
+  },
+  {
+    "category": "attendance",
+    "question": "Where can I check attendance requirements?",
+    "answer": "Please refer to the latest official academic regulations or ask your department about the applicable attendance requirements."
+  },
+
+  {
+    "category": "academics",
+    "question": "How can I contact my department?",
+    "answer": "Please use the official college website or your department's official communication channel to find the correct contact details."
+  },
+  {
+    "category": "examinations",
+    "question": "Where can I find examination results?",
+    "answer": "Check the official examination portal or college notices for published results. Contact your department if you need help."
+  },
+  {
+    "category": "hostel",
+    "question": "Whom should I contact for hostel problems?",
+    "answer": "For hostel-related problems, contact your hostel warden or the official hostel administration."
+  },
+  {
+    "category": "fees",
+    "question": "How can I confirm my fee payment?",
+    "answer": "Check your official fee portal or payment receipt. If the payment status is unclear, contact the college accounts department."
+  },
+  {
+    "category": "placements",
+    "question": "Where can I get placement information?",
+    "answer": "Check official placement notices and contact the college placement or training and placement department for current information."
+  },
+  {
+    "category": "general",
+    "question": "Where can I find official college notices?",
+    "answer": "Check the official college website and the communication channels used by your department for current notices."
+  },
+  
+  {
+    "category": "general",
+    "question": "How can I contact ABES Engineering College?",
+    "answer": "The official ABES website lists the college phone number as 0120-7135112 and email as info@abes.ac.in. Website: https://www.abes.ac.in/"
+  },
+  {
+    "category": "examinations",
+    "question": "Where can I find official ABES notices and academic results?",
+    "answer": "Visit the official ABES website at https://www.abes.ac.in/ and look for the Academic Calendar, Circulars/Notices, and Academic Results links. Check the latest official notice for current information."
+  },
+  {
+    "category": "placements",
+    "question": "How can I contact the ABES placement department?",
+    "answer": "Visit the official ABES placement page at https://www.abes.ac.in/placement.html for Centre for Career Planning & Development (CCPD) information and current contact details."
+  }
+
+
+]
