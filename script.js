@@ -55,7 +55,7 @@ async function sendMessage() {
     sendBtn.disabled = true;
 
     try {
-        const response = await fetch("http://localhost:5000/api/chat", {
+        const response = await fetch("https://asknova-backend-28q5.onrender.com/api/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
