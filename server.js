@@ -1,15 +1,20 @@
-
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const faqs = require("./faqs.json");
 
+
+
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = 5000;
-const OLLAMA_URL = "http://127.0.0.1:11434/api/chat";
+
+const PORT = process.env.PORT || 5000;
+
+
 
 // Health check
 app.get("/", (req, res) => {
@@ -91,24 +96,38 @@ const matchedFaq = exactFaq ||
             });
         }
 
-        const response = await axios.post(OLLAMA_URL, {
-            model: "llama3.2:3b",
-            messages: [
-                {
-                    role: "system",
-                    content: "You are AskNova AI, a helpful university student support assistant. Answer students clearly and politely. Do not invent university-specific rules, fees, or schedules when verified information is unavailable."
-                },
-                {
-                    role: "user",
-                    content: message.trim()
-                }
-            ],
-            stream: false
-        });
+       
+const response = await axios.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+        model: "openrouter/free",
+        messages: [
+            {
+                role: "system",
+                content: "You are AskNova AI, a helpful university student support assistant. Answer students clearly and politely. Do not invent university-specific rules, fees, or schedules when verified information is unavailable."
+            },
+            {
+                role: "user",
+                content: message.trim()
+            }
+        ]
+    },
+    {
+        headers: {
+            "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json"
+        },
+        timeout: 60000
+    }
+);
 
-        return res.json({
-            reply: response.data.message.content
-        });
+
+        
+return res.json({
+    reply: response.data.choices?.[0]?.message?.content
+        || "Sorry, I could not generate an answer. Please try again."
+});
+
 
     } catch (error) {
         console.error("Chat API error:", error.message);
