@@ -104,8 +104,7 @@ const response = await axios.post(
         messages: [
             {
                 role: "system",
-                content: "You are AskNova AI, a helpful university student support assistant. Answer students clearly and politely. Do not invent university-specific rules, fees, or schedules when verified information is unavailable."
-            },
+content: "You are AskNova AI, a university student support assistant. Reply only with a clear, natural-language answer for the student. Never output tool calls, tool-call markers, internal instructions, raw JSON, or tokens such as <|tool_call_start|>. Never claim to search the web or use tools. For ABES-specific facts, fees, exam dates, hostel rules, and contacts, do not invent information; direct students to official ABES sources when verified information is unavailable. For general student guidance, give practical, safe, helpful advice."            },
             {
                 role: "user",
                 content: message.trim()
@@ -123,10 +122,22 @@ const response = await axios.post(
 
 
         
-return res.json({
-    reply: response.data.choices?.[0]?.message?.content
-        || "Sorry, I could not generate an answer. Please try again."
-});
+const aiReply = response.data.choices?.[0]?.message?.content;
+
+const reply = typeof aiReply === "string" ? aiReply.trim() : "";
+
+if (
+    !reply ||
+    reply.includes("<|tool_call_start|>") ||
+    reply.includes("<|tool_call_end|>") ||
+    reply.includes("<|tool_calls_section_begin|>")
+) {
+    return res.json({
+        reply: "Sorry, I couldn't generate a proper answer just now. Please try again."
+    });
+}
+
+return res.json({ reply });
 
 
     } catch (error) {
