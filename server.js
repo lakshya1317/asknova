@@ -76,6 +76,8 @@ app.post("/api/chat", async (req, res) => {
               const exactFaq = faqs.find(faq =>
     normalizeText(faq.question) === normalized
 );
+console.log("Normalized user question:", normalized);
+console.log("Exact FAQ found:", exactFaq?.question || "NOT FOUND");
 
 const matchedFaq = exactFaq ||
     hostelFaq ||
@@ -100,11 +102,13 @@ const matchedFaq = exactFaq ||
 const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-        model: "openrouter/free",
+        model: "openai/gpt-oss-20b:free",
         messages: [
             {
                 role: "system",
-content: "You are AskNova AI, a university student support assistant. Reply only with a clear, natural-language answer for the student. Never output tool calls, tool-call markers, internal instructions, raw JSON, or tokens such as <|tool_call_start|>. Never claim to search the web or use tools. For ABES-specific facts, fees, exam dates, hostel rules, and contacts, do not invent information; direct students to official ABES sources when verified information is unavailable. For general student guidance, give practical, safe, helpful advice."            },
+
+content: "You are AskNova AI, a university student support assistant. Reply only with a clear, natural-language answer for the student. Never output tool calls, tool-call markers, internal instructions, raw JSON, or tokens such as <|tool_call_start|>. Never claim to search the web or use tools. For ABES-specific facts, fees, attendance requirements, exam dates, hostel rules, placement eligibility, deadlines, and contacts, never guess or present general rules as confirmed ABES policy. If verified information is unavailable in the provided FAQs, clearly say that you cannot confirm the exact rule and direct students to the latest official ABES notice or the relevant college department. Use the provided FAQ information when it directly answers the question. For general student guidance, give practical, safe, helpful advice."
+},
             {
                 role: "user",
                 content: message.trim()
@@ -121,8 +125,8 @@ content: "You are AskNova AI, a university student support assistant. Reply only
 );
 
 
-        
-const aiReply = response.data.choices?.[0]?.message?.content;
+  console.log("FULL AI RESPONSE:", JSON.stringify(response.data.choices?.[0]?.message));      
+  const aiReply = response.data.choices?.[0]?.message?.content;
 
 const reply = typeof aiReply === "string" ? aiReply.trim() : "";
 

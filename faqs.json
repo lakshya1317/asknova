@@ -61,8 +61,12 @@
     "question": "Where can I find official college notices?",
     "answer": "Check the official college website and the communication channels used by your department for current notices."
   },
-  
-  {
+    {
+    "category": "general",
+    "question": "What is the official website of ABES Engineering College?",
+    "answer": "The official website of ABES Engineering College is https://www.abes.ac.in/"
+  },
+   {
     "category": "general",
     "question": "How can I contact ABES Engineering College?",
     "answer": "The official ABES website lists the college phone number as 0120-7135112 and email as info@abes.ac.in. Website: https://www.abes.ac.in/"
