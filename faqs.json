@@ -76,6 +76,32 @@
     "category": "placements",
     "question": "How can I contact the ABES placement department?",
     "answer": "Visit the official ABES placement page at https://www.abes.ac.in/placement.html for Centre for Career Planning & Development (CCPD) information and current contact details."
+  },
+    
+  {
+    "category": "study_guidance",
+    "question": "How can I prepare for exams effectively?",
+    "answer": "Start by reviewing your syllabus and exam pattern. Divide topics into small daily targets, practise previous-year questions, revise regularly, and take short breaks. For ABES-specific exam dates or rules, check the latest official notice."
+  },
+  {
+    "category": "study_guidance",
+    "question": "How can I improve my time management?",
+    "answer": "List your tasks, prioritise the most important ones, and create a realistic daily timetable. Use focused study sessions, keep time for revision and sleep, and review your progress at the end of each day."
+  },
+  {
+    "category": "career",
+    "question": "How should I start learning programming?",
+    "answer": "Choose one programming language, learn variables, conditions, loops, functions, and basic data structures, then practise small problems consistently. Build mini-projects as your skills improve. For placements, combine programming practice with problem-solving and project work."
+  },
+  {
+    "category": "career",
+    "question": "How can I prepare for campus placements?",
+    "answer": "Build strong programming and problem-solving fundamentals, practise data structures and algorithms, revise core computer science subjects, create projects you can explain confidently, and prepare your resume and interview communication. Follow your college's official placement notices for eligibility and deadlines."
+  },
+  {
+    "category": "wellbeing",
+    "question": "How can I manage academic stress?",
+    "answer": "Break large tasks into smaller steps, follow a realistic routine, get enough sleep, exercise regularly, and talk to someone you trust if you feel overwhelmed. If stress is persistent or seriously affects daily life, consider seeking support from a qualified professional."
   }
 
 
