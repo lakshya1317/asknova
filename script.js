@@ -215,8 +215,39 @@ function addBotMessage(message) {
 }
 
 // Safely display clickable HTTP/HTTPS links
+
+
 function addTextWithLinks(container, text) {
-    const parts = String(text).split(/(https?:\/\/[^\s<]+)/gi);
+    let cleanText = String(text);
+
+    // Convert Markdown links: [text](https://example.com)
+    const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkPattern.exec(cleanText)) !== null) {
+        // Process the text before the Markdown link
+        addPlainTextWithUrls(container, cleanText.slice(lastIndex, match.index));
+
+        const link = document.createElement("a");
+        link.href = match[2];
+        link.textContent = match[1];
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        container.appendChild(link);
+
+        lastIndex = linkPattern.lastIndex;
+    }
+
+    // Process remaining text and ordinary URLs
+    addPlainTextWithUrls(container, cleanText.slice(lastIndex));
+}
+
+function addPlainTextWithUrls(container, text) {
+    // Remove Markdown bold markers
+    const cleanText = String(text).replace(/\*\*(.*?)\*\*/g, "$1");
+    const urlPattern = /(https?:\/\/[^\s<]+)/gi;
+    const parts = cleanText.split(urlPattern);
 
     parts.forEach(function (part) {
         if (/^https?:\/\//i.test(part)) {
@@ -229,7 +260,6 @@ function addTextWithLinks(container, text) {
             link.textContent = urlText;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
-
             container.appendChild(link);
 
             if (punctuation) {
@@ -240,6 +270,7 @@ function addTextWithLinks(container, text) {
         }
     });
 }
+
 
 
 // CURRENT TIME
