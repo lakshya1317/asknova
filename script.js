@@ -63,20 +63,29 @@ async function sendMessage() {
             body: JSON.stringify({ message: message })
         });
 
-        const data = await response.json();
+        let data;
 
-        removeTyping();
+try {
+    data = await response.json();
+} catch {
+    data = {};
+}
 
-        if (!response.ok) {
-            addBotMessage(data.reply || "Sorry, something went wrong.");
-        } else {
-            addBotMessage(data.reply || "I couldn't generate a response.");
-        }
+removeTyping();
+
+if (!response.ok) {
+    addBotMessage(
+        data.reply || `Sorry, the server returned an error (${response.status}). Please try again.`
+    );
+} else {
+    addBotMessage(
+        data.reply || "Sorry, I couldn't generate a response. Please try again."
+    );
+}
     } catch (error) {
         removeTyping();
         addBotMessage(
-            "Sorry, I could not connect to the server. Please ensure the AskNova backend and Ollama are running. ❌"
-        );
+"Sorry, I couldn't connect to AskNova right now. The server may be waking up or temporarily unavailable. Please wait a moment and try again. ❌"        );
         console.error("Chat error:", error);
     } finally {
         sendBtn.disabled = false;
