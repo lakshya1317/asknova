@@ -102,7 +102,7 @@ const matchedFaq = exactFaq ||
 const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-       model: "openai/gpt-oss-20b",
+       model: "openrouter/free",
         messages: [
             {
                 role: "system",
