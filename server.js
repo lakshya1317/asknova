@@ -145,7 +145,7 @@ return res.json({ reply });
 
 
     } catch (error) {
-        console.error("Chat API error:", error.message);
+       console.error("Chat API error:", error.response?.status, JSON.stringify(error.response?.data) || error.message);
 
         return res.status(500).json({
             reply: "Could not connect to the local AI. Please ensure Ollama is running."
